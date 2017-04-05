@@ -1,28 +1,28 @@
 // JavaScript Document
 //添加文章
 function chkart(){
-	if($('txt_title').value==""){
+	if($('#txt_title').value == ''){
 		alert("博客主题名称不允许为空！");
-		$('txt_title').focus();
+		$('#txt_title').focus();
 		return false;
 	}
-	if($('file').value==""){
+	if($('#file').value == ''){
 		alert("文章内容不允许为空！");
-		$('file').focus();
+		$('#file').focus();
 		return false;
 	}
-	url = 'article/addart_chk.php?act=add&title='+$('txt_title').value+"&arttype="+$('articletype').value+"&cont="+$('file').value;
+	url = "article/addart_chk.php?act=add&title="+$('#txt_title').value+"&arttype="+$('articletype').value+"&cont="+$('#file').value;
 	xmlhttp.open('get',url,true);
 	xmlhttp.onreadystatechange = function(){
-		if(xmlhttp.readystate == 4){
+		if(xmlhttp.readyState == 4){
 			if(xmlhttp.status == 200){
 				msg = xmlhttp.responseText;
 				if(msg == '1'){
 					alert('文章发表成功');
 					xmlhttp.open('get','article/article.php',true);
 					xmlhttp.onreadystatechange = function(){
-						if(xmlhttp.readystate == 4 && xmlhttp.status == 200){
-							$('showmenu').innerHTML = xmlhttp.responseText;
+						if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+							$('#showmenu').innerHTML = xmlhttp.responseText;
 						}
 					}
 					xmlhttp.send(null);

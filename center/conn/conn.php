@@ -1,116 +1,99 @@
 <?php
 class opmysqli{
-    private $host = '127.0.0.1';
-    private $name = 'root';
-    private $pwd = 'root';
-    private $db = 'db_blog';
-    //æ•°æ®åº“é“¾æŽ¥èµ„æº
-    private $conn = '';
-    //ç»“æžœé›†
-    private $result = '';
-    //è¿”å›žç»“æžœ
-    private $msg = '';
-    //è¿”å›žå­—æ®µ
-    private $fields = '';
-    //è¿”å›žå­—æ®µæ•°
-    private $fieldsNum = 0;
-    //è¿”å›žç»“æžœæ•°
-    private $rowsNum = 0;
-    //è¿”å›žå­—æ®µæ•°ç»„
-    private $filesArray = array();
-    //è¿”å›žç»“æžœæ•°ç»„
-    private $rowsArray = array();
+	private $host = '127.0.0.1';			//·þÎñÆ÷µØÖ·
+	private $name = 'root';					//µÇÂ¼ÕËºÅ
+	private $pwd = 'root';					//µÇÂ¼ÃÜÂë
+	private $dBase = 'db_blog';				//Êý¾Ý¿âÃû³Æ
+	private $conn = '';						//Êý¾Ý¿âÁ´½Ó×ÊÔ´
+	private $result = '';					//½á¹û¼¯
+	private $msg = '';						//·µ»Ø½á¹û
+	private $fields;						//·µ»Ø×Ö¶Î
 
-    //åˆå§‹åŒ–ç±»
-    function __construct($host='',$name='',$pwd='',$db=''){
-        if($host != ''){
-            $this->host = $host;
-        }
-        if($name != ''){
-            $this->name = $name;
-        }
-        if($pwd != ''){
-            $this->pwd = $pwd;
-        }
-        if($db != ''){
-            $this->db = $db;
-        }
-        $this->init_conn();
-    }
+	//³õÊ¼»¯Àà
+	function __construct($host='',$name='',$pwd='',$dBase=''){
+		if($host != '')
+			$this->host = $host;
+		if($name != '')
+			$this->name = $name;
+		if($pwd != '')
+			$this->pwd = $pwd;
+		if($dBase != '')
+			$this->dBase = $dBase;
+		$this->init_conn();
+	}
+	//Á´½ÓÊý¾Ý¿â
+	function init_conn(){
+		$this->conn=mysqli_connect($this->host,$this->name,$this->pwd,$this->dBase);
+		mysqli_query($this->conn,"set names gb2312");
+	}
+	//²éÑ¯½á¹û
+	function mysqli_query_rst($sql){
+		if($this->conn == ''){
+			$this->init_conn();
+		}
+		$this->result = @mysqli_query($this->conn,$sql);
+	}
+	//È¡µÃ×Ö¶ÎÊý 
+	function getFieldsNum($sql){
+		$this->mysqli_query_rst($sql);
+		$this->fieldsNum = @mysqli_num_fields($this->result);
+	}
 
-    //é“¾æŽ¥æ•°æ®åº“
-    function init_conn(){
-        $this->conn = mysqli_connect($this->host,$this->name,$this->pwd,$this->db);
-        mysqli_query($this->conn,"set names gb2312");
-    }
-    //æŸ¥è¯¢ç»“æžœ
-    function mysqli_query_rst($sql){
-        if($this->conn == ''){
-            $this->init_conn();
-        }
-        $this->result = mysqli_query($this->conn,$sql);
-    }
-    //å–å¾—å­—æ®µæ•°
-    function getFieldsNum($sql){
-        $this->mysqli_query_rst($sql);
-        $this->fieldsNum = mysqli_num_fields($this->result);
-    }
-
-    //å–å¾—æŸ¥è¯¢ç»“æžœæ•°
-    function getRowsNum($sql){
-        $this->mysqli_query_rst($sql);
-        $this->rowsNum = mysqli_num_rows($this->result);
-        return $this->rowsNum;
-    }
-    //å–å¾—è®°å½•æ•°ç»„
-    function getRowsArray($sql){
-        $this->mysqli_query_rst($sql);
-        while ($row = mysqli_fetch_array($this->result,MYSQL_ASSOC)){
-            $this->rowsArray[] = $row;
-        }
-        return $this->rowsArray;
-    }
-    //æ›´æ–°ï¼Œæ·»åŠ ï¼Œåˆ é™¤è®°å½•æ•°
-    function update_add_del_affected_rows($sql){
-        if($this->conn == ''){
-            $this->init_conn();
-        }
-        @mysqli_query($this->conn,$sql);
-        $this->rowsNum = mysqli_affected_rows($this->conn);
-        return $this->rowsNum;
-    }
-    //èŽ·å¾—å¯¹åº”çš„å­—æ®µå€¼
-    function getFields($sql,$fields){
-        $this->mysqli_query_rst($sql);
-        if(mysqli_num_rows($this->result > 0)){
-            $tmpfld = mysqli_fetch_row($this->result);
-            $this->fields = $tmpfld[$fields];
-        }
-        return $this->fields;
-    }
-    //é”™è¯¯ä¿¡æ¯
-    function msg_error(){
-        if(mysqli_errno() != 0){
-            $this->msg = mysqli_errno();
-        }
-        return $this->msg;
-    }
-
-    //é‡Šæ”¾ç»“æžœé›†
-    function close_rst(){
-        $this->msg = '';
-        $this->fieldsNum = 0;
-        $this->rowsNum = 0;
-        $this->filesArray = '';
-        $this->rowsArray = '';
-    }
-
-    //å…³é—­æ•°æ®åº“
-    function close_conn(){
-        $this->close_rst();
-        mysqli_close($this->conn);
-        $this->conn;
-    }
+	//È¡µÃ²éÑ¯½á¹ûÊý
+	function getRowsNum($sql){
+		$this->mysqli_query_rst($sql);
+		$this->rowsNum = @mysqli_num_rows($this->result);
+		return $this->rowsNum;
+	}
+	//È¡µÃ¼ÇÂ¼Êý×é£¨¶àÌõ¼ÇÂ¼£©
+	function getRowsArray($sql){
+		$this->mysqli_query_rst($sql);
+		while($row = mysqli_fetch_array($this->result,MYSQLI_ASSOC)) {
+    		$this->rowsArray[] = $row;
+   		}
+		return @$this->rowsArray;
+	}
+	//¸üÐÂ¡¢É¾³ý¡¢Ìí¼Ó¼ÇÂ¼Êý
+	function uidRst($sql){
+		if($this->conn == ''){
+			$this->init_conn();
+		}
+		@mysqli_query($this->conn,$sql);
+		$this->rowsNum = @mysqli_affected_rows($this->conn);
+		return $this->rowsNum;
+	}
+	//»ñÈ¡¶ÔÓ¦µÄ×Ö¶ÎÖµ
+	function getFields($sql,$fields){
+		$this->mysqli_query_rst($sql);
+		if(@mysqli_num_rows($this->result) > 0){
+			$tmpfld = mysqli_fetch_row($this->result);
+			$this->fields = $tmpfld[$fields];
+		}
+		return $this->fields;
+	}
+	
+	//´íÎóÐÅÏ¢
+	function msg_error(){
+		if(mysqli_errno() != 0) {
+			$this->msg = mysqli_error();
+		}
+		return $this->msg;
+	}
+	//ÊÍ·Å½á¹û¼¯
+	function close_rst(){
+		//mysqli_free_result($this->result);
+		$this->msg = '';
+		$this->fieldsNum = 0;
+		$this->rowsNum = 0;
+		$this->filesArray = '';
+		$this->rowsArray = '';
+	}
+	//¹Ø±ÕÊý¾Ý¿â
+	function close_conn(){
+		$this->close_rst();
+		mysqli_close($this->conn);
+		$this->conn = '';
+	}
 }
 $conne = new opmysqli();
 ?>

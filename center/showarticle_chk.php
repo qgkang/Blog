@@ -2,7 +2,7 @@
 	session_start();
 	header('Content-Type:text/html;charset=gb2312');
 	include_once 'conn/conn.php';
-	
+
 	$artid = $_GET['artid'];
 	$quoteid = $_GET['quoteid'];
 	$name = $_SESSION['name'];
@@ -23,6 +23,7 @@
 	}else if($act == 'quote'){
 		if(!empty($name) and !is_null($name)){
 			if($_GET['uid'] == $name){
+			    //引用自己的文章
 				$reback = '4';
 			}else{
 				$chkquote = $conne->getRowsNum("select artquote from tb_article where author = '".$name."'");
