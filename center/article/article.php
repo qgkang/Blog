@@ -8,7 +8,7 @@
 		$act="";
 	}
 	//获取当前用户
-	$name = $_SESSION['name']=12;
+	$name = $_SESSION['name'];
 	$num = 10;								//每页显示记录数
 	//获取当前页
 	if(isset($_GET['curpage'])){
@@ -17,13 +17,17 @@
 		$curpage ="";
 	}
 	if($act == 'del'){
+	    //获得删除的id
 		$rd = $_GET['rd'];
+		//初始化删除sql语句
 		$delsql = "delete from tb_article where id = -1 ";
 		if(!empty($rd)){
+		    //转换为数组
 			$delarr = explode(',',$rd);
 			foreach($delarr as $value){
 				$delsql .= "or id = ".$value." ";
 			}
+			//影响的行数
 			$delnum = $conne->uidRst($delsql);
 		}
 	}
@@ -35,7 +39,9 @@
 		}
 		$totnum = $conne->getRowsNum($sql);		//记录数
 		$totpage = ceil($totnum / $num);		//页数
-		$tmpsql = $sql." limit ".($num *($curpage-1)).",".$num;
+		//获取上一页的最后记录数
+        $tmpsql = $sql." limit ".($num *($curpage-1)).",".$num;
+        //获取记录数
 		$arr = $conne->getRowsArray($tmpsql);
 ?>
 <div id = 'showarticle'>
@@ -64,7 +70,16 @@
 if($totnum > 0){
 	?>
 		<tr>
-			<td colspan="4" height="30" align="right" valign="middle"><a href="#" onclick="return alldel('<?php echo count($arr); ?>')">全选</a> <a href="#" onclick="return overdel('<?php echo count($arr) ?>')">反选</a>&nbsp;&nbsp;<button id="delbtn" name="delbtn" class="btn" onclick="return del('<?php echo $_SERVER['SCRIPT_NAME']; ?>','<?php echo count($arr); ?>',<?php echo $curpage; ?>)">删除选择</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo ($curpage == 1)?"首页":"<a  onclick='return pagination(\"".$_SERVER['SCRIPT_NAME']."\",1)'>首页</a>"; ?>&nbsp;<?php echo ($curpage==1)?"上一页":"<a onclick='return pagination(\"".$_SERVER['SCRIPT_NAME']."\",".($curpage-1).")'>上一页</a>"; ?>&nbsp;<?php echo ($curpage == $totpage)?'下一页':"<a onclick='return pagination(\"".$_SERVER['SCRIPT_NAME']."\",".($curpage+1).")'>下一页</a>"; ?> <?php echo ($curpage==$totpage)?"尾页":"<a onclick='return pagination(\"".$_SERVER['SCRIPT_NAME']."\",".($totpage).")'>尾页</a>"; ?> 当前是第<?php echo $curpage; ?>页/共<?php echo $totpage; ?>页<?php echo $totnum; ?>条记录  跳转到：<select id="jump" name="jump" onchange="return jumpmem('<?php echo $_SERVER['SCRIPT_NAME']; ?>')">
+			<td colspan="4" height="30" align="right" valign="middle">
+                <a href="#" onclick="return alldel('<?php echo count($arr); ?>')">全选</a>
+                <a href="#" onclick="return overdel('<?php echo count($arr) ?>')">反选</a>&nbsp;&nbsp;
+                <button id="delbtn" name="delbtn" class="btn" onclick="return del('<?php echo $_SERVER['SCRIPT_NAME']; ?>','<?php echo count($arr); ?>',<?php echo $curpage; ?>)">删除选择</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <?php echo ($curpage == 1)?"首页":"<a  onclick='return pagination(\"".$_SERVER['SCRIPT_NAME']."\",1)'>首页</a>"; ?>&nbsp;
+                <?php echo ($curpage==1)?"上一页":"<a onclick='return pagination(\"".$_SERVER['SCRIPT_NAME']."\",".($curpage-1).")'>上一页</a>"; ?>&nbsp;
+                <?php echo ($curpage == $totpage)?'下一页':"<a onclick='return pagination(\"".$_SERVER['SCRIPT_NAME']."\",".($curpage+1).")'>下一页</a>"; ?>
+                <?php echo ($curpage==$totpage)?"尾页":"<a onclick='return pagination(\"".$_SERVER['SCRIPT_NAME']."\",".($totpage).")'>尾页</a>"; ?>
+                当前是第<?php echo $curpage; ?>页/共<?php echo $totpage; ?>页<?php echo $totnum; ?>条记录  跳转到：
+                <select id="jump" name="jump" onchange="return jumpmem('<?php echo $_SERVER['SCRIPT_NAME']; ?>')">
 	
 			<?php
 				for($i=1;$i<=$totpage;$i++){
