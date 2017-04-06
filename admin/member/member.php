@@ -35,20 +35,27 @@ if(empty($_GET['act'])){	//获取当前是第几页
 	}else{
 		$fields = $_GET['fields'];					//依照该字段排列记录
 	}
-	
+	//是否有查询内容，如果没有
 	if(!isset($_REQUEST['cont'])){
+		//直接生成sql语句，用$fields字段作为排序依据
 		$sql = "select id,name,email,realname,sex,birthday,hitnum,freeze,isnominate from tb_member order by ".$fields." desc";
 	}else{
+		//获取要查询的字段、查询方式和查询内容
 		$querymem = $_REQUEST['querymem'];
 		$signslt = $_REQUEST['signslt'];
 		$cont = $_REQUEST['cont'];
+		//初始化sql为一个无条件查询的语句
 		$sql = 'select id,name,email,realname,sex,birthday,hitnum,freeze,isnominate from tb_member ';
+		//根据查询字段所在的组，生成不同的where子句
 		if(in_array($querymem,array('id','upfile','uppics','hitnum','birthday'))){
+			//数字类型的字段，“< = >”
 			$sql .= " where ".$querymem." ".$signslt." ".$cont;
 		}else if(in_array($querymem,array('name','realname','qq','email'))){
+			//字符型数据，分模糊和精确查询
 			if($signslt == 'exac'){
 				$sql .= "where ".$querymem." = '".$cont."'";
 			}else if($signslt == 'mist'){
+				//模糊查询
 				$sql .= "where ".$querymem." like '%".$cont."%'";
 			}
 		}
@@ -103,9 +110,15 @@ if(empty($_GET['act'])){	//获取当前是第几页
 ?>
 	<tr class="bottom">
 		<td colspan="5" height="30">
-		<a href="#" onclick="return alldel(showmem);">全选</a> <a href="#" onclick="return overdel(showmem);">反选</a>&nbsp;&nbsp;
-          <input type="submit" value="删除选择" class="btn" onclick = '' /></td>
-		  <td colspan="6" align="right" valign="middle"><?php echo ($curpage == 1)?"首页":"<a href=member.php?curpage=1&querymem=".$querymem."&signslt=".urlencode($signslt)."&cont=".$cont.">首页</a>"; ?>&nbsp;<?php echo ($curpage==1)?"上一页":"<a href=member.php?curpage=".($curpage-1)."&querymem=".$querymem."&signslt=".urlencode($signslt)."&cont=".$cont.">上一页</a>"; ?>&nbsp;<?php echo ($curpage == $totpage)?'下一页':"<a href=member.php?curpage=".($curpage+1)."&querymem=".$querymem."&signslt=".urlencode($signslt)."&cont=".$cont.">下一页</a>"; ?> <?php echo ($curpage==$totpage)?"尾页":"<a href=member.php?curpage=".$totpage."&querymem=".$querymem."&signslt=".urlencode($signslt)."&cont=".$cont.">尾页</a>"; ?> 当前是第<?php echo $curpage; ?>页/共<?php echo $totpage; ?>页<?php echo $totnum; ?>条记录
+			<a href="#" onclick="return alldel(showmem);">全选</a>
+			<a href="#" onclick="return overdel(showmem);">反选</a>&nbsp;&nbsp;
+			<input type="submit" value="删除选择" class="btn" onclick = '' />
+		</td>
+		<td colspan="6" align="right" valign="middle">
+			<?php echo ($curpage == 1)?"首页":"<a href=member.php?curpage=1&querymem=".$querymem."&signslt=".urlencode($signslt)."&cont=".$cont.">首页</a>"; ?>&nbsp;
+			<?php echo ($curpage==1)?"上一页":"<a href=member.php?curpage=".($curpage-1)."&querymem=".$querymem."&signslt=".urlencode($signslt)."&cont=".$cont.">上一页</a>"; ?>&nbsp;
+			<?php echo ($curpage == $totpage)?'下一页':"<a href=member.php?curpage=".($curpage+1)."&querymem=".$querymem."&signslt=".urlencode($signslt)."&cont=".$cont.">下一页</a>"; ?>
+			<?php echo ($curpage==$totpage)?"尾页":"<a href=member.php?curpage=".$totpage."&querymem=".$querymem."&signslt=".urlencode($signslt)."&cont=".$cont.">尾页</a>"; ?> 当前是第<?php echo $curpage; ?>页/共<?php echo $totpage; ?>页<?php echo $totnum; ?>条记录
 		  <?php if($_REQUEST["signslt"]!='exac'){;?>
 		  跳转到：<select id="jump" name="jump" onchange="return jumpmem('member.php','<?php echo $sql; ?>')">
 		<!--  跳转到：<select id="jump" name="jump" onchange="return add()">-->
@@ -124,7 +137,6 @@ if(empty($_GET['act'])){	//获取当前是第几页
 	</tr>
 <?php 
 	}
-	
 ?>
 </form>
 </table>

@@ -43,6 +43,7 @@
 	//获取记录数
 	$arr = $conne->getRowsArray($tmpsql);
 ?>
+<script language="javascript" src="../js/choose.js"></script>
 <div id = 'showarticle'>
 <table width="600" border="1" cellpadding="0" cellspacing="0" align="center">
 	<tr>
