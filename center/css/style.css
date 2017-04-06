@@ -1,7 +1,7 @@
 /* CSS Document */
 body{
-	background-image: url(../images/bg.gif);
-	background-position:left top ;
+	/*background-image: url(../images/bg.gif);*/
+	background-position:center top ;
 	background-repeat:repeat;
 	font-size:12px;
 	height: 100%;

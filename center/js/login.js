@@ -4,7 +4,7 @@ function $(id){
 }
 window.onload = function(){
 	$('lgname').focus();
-	$('lgbtn').onclick = chklg;
+	$('#lgbtn').onclick = chklg;
 	$('lgname').onkeydown = function(){
 		if(event.keyCode == 13){
 			$('lgpwd').select();

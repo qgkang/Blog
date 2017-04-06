@@ -5,3 +5,4 @@ if(window.ActiveXObject){
 }else if(window.XMLHttpReuqest){
 	xmlhttp = new XMLHttpRequest();
 }
+console.log(xmlhttp);
