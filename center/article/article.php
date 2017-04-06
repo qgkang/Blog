@@ -8,7 +8,7 @@
 		$act="";
 	}
 	//获取当前用户
-	$name = $_SESSION['name'];
+	$name = $_SESSION['name'] = 'wode';
 	$num = 10;								//每页显示记录数
 	//获取当前页
 	if(isset($_GET['curpage'])){
@@ -20,29 +20,28 @@
 	    //获得删除的id
 		$rd = $_GET['rd'];
 		//初始化删除sql语句
-		$delsql = "delete from tb_article where id = -1 ";
+		$delsql = "delete from tb_article where id = -1";
 		if(!empty($rd)){
 		    //转换为数组
 			$delarr = explode(',',$rd);
 			foreach($delarr as $value){
-				$delsql .= "or id = ".$value." ";
+				$delsql .= "or where id=".$value." ";
 			}
 			//影响的行数
 			$delnum = $conne->uidRst($delsql);
 		}
 	}
-		if(empty($curpage) or is_null($curpage)){
-			$curpage = 1;
-		}
-		if(empty($sql) or is_null($sql)){
-			$sql = "select id,typename,title,hitnum,renum from tb_article where author = '".$name."' order by id desc";
-		}
-		$totnum = $conne->getRowsNum($sql);		//记录数
-		$totpage = ceil($totnum / $num);		//页数
-		//获取上一页的最后记录数
-        $tmpsql = $sql." limit ".($num *($curpage-1)).",".$num;
-        //获取记录数
-		$arr = $conne->getRowsArray($tmpsql);
+	if(empty($curpage) or is_null($curpage)){
+		$curpage = 1;
+	}
+
+	$sql = "select id,typename,title,hitnum,renum from tb_article where author = '".$name."' order by id desc";
+	$totnum = $conne->getRowsNum($sql);		//记录数
+	$totpage = ceil($totnum / $num);		//页数
+	//获取上一页的最后记录数
+	$tmpsql = $sql." limit ".($num *($curpage-1)).",".$num;
+	//获取记录数
+	$arr = $conne->getRowsArray($tmpsql);
 ?>
 <div id = 'showarticle'>
 <table width="600" border="1" cellpadding="0" cellspacing="0" align="center">
